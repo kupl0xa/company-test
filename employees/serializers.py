@@ -24,17 +24,9 @@ class EmployeeByDeptSerializer(serializers.ModelSerializer):
 class DepartmentSerializer(serializers.ModelSerializer):
     """Сериализатор для модели Department"""
     director = serializers.StringRelatedField()
-    employees_count = serializers.SerializerMethodField()
-    total_salary = serializers.SerializerMethodField()
+    employees_count = serializers.IntegerField()
+    total_salary = serializers.IntegerField()
 
     class Meta:
         model = Department
         fields = ('id', 'name', 'director', 'employees_count', 'total_salary')
-
-    @staticmethod
-    def get_employees_count(obj):
-        return obj.employee.count()
-
-    @staticmethod
-    def get_total_salary(obj):
-        return obj.employee.aggregate(Sum('salary'))['salary__sum']

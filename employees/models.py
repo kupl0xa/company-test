@@ -1,5 +1,7 @@
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Value as V
+from django.db.models.functions import Concat
 
 
 class Department(models.Model):
@@ -60,5 +62,7 @@ class Employee(models.Model):
         return f'{self.last_name} {self.first_name}'
 
     @classmethod
-    def search_lastname(cls, last_name):
-        return cls.objects.filter(last_name=last_name)
+    def search_fullname(cls, query):
+        return cls.objects.annotate(full_name=Concat(
+            'last_name', V(' '), 'first_name', V(' '), 'surname')
+        ).filter(full_name__icontains=query)
